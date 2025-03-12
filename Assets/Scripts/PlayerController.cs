@@ -1,67 +1,103 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;  // <--- add
+using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterController), typeof(PlayerInput))] // <--- add
-public class PlayerController : MonoBehaviour   // <--- Change the classname to PlayerController
+[RequireComponent(typeof(CharacterController), typeof(PlayerInput))]
+public class PlayerController : MonoBehaviour
 {
     private CharacterController controller;
     private Vector3 playerVelocity;
     private bool groundedPlayer;
 
-    private float playerSpeed = 2.0f;
-    private float jumpHeight = 1.0f;
-    private float gravityValue = -9.81f;
+    [Header("Movement Settings")]
+    public float playerSpeed = 2.0f;
+    public float jumpHeight = 1.0f;
+    public float gravityValue = -9.81f;
+    public float rotationSpeed = 120f; // Higher value for faster rotation
 
-    private PlayerInput playerInput;  // <--- add
+    // Add a reference to a child object for camera targeting
+    [Header("References")]
+    public Transform cameraTarget;
+    public Transform cameraTransform;
 
-    private InputAction moveAction;  // <--- add
-    private InputAction lookAction;  // <--- add
-    private InputAction jumpAction;  // <--- add
-    private InputAction aimAction;  // <--- add
-
+    private PlayerInput playerInput;
+    private InputAction moveAction;
+    private InputAction lookAction;
+    private InputAction jumpAction;
+    private InputAction aimAction;
 
     private void Start()
     { 
-        controller = GetComponent<CharacterController>();  // <--- add
-        playerInput = GetComponent<PlayerInput>();  // <--- add
-        moveAction = playerInput.actions["Move"];  // <--- add
-        lookAction = playerInput.actions["Look"];  // <--- add
-        jumpAction = playerInput.actions["Jump"];  // <--- add
-        aimAction = playerInput.actions["Aim"];  // <--- add
+        controller = GetComponent<CharacterController>();
+        playerInput = GetComponent<PlayerInput>();
+        moveAction = playerInput.actions["Move"];
+        lookAction = playerInput.actions["Look"];
+        jumpAction = playerInput.actions["Jump"];
+        aimAction = playerInput.actions["Aim"];
+
+        // Create camera target if it doesn't exist
+        if (cameraTarget == null)
+        {
+            GameObject targetObj = new GameObject("CameraTarget");
+            cameraTarget = targetObj.transform;
+            cameraTarget.SetParent(transform);
+            cameraTarget.localPosition = new Vector3(0, 1.5f, 0); // Adjust height as needed
+        }
+
+        if (cameraTransform == null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
+        
+        // Make your Cinemachine camera look at this target instead of the player
+        // This step should be done in the Inspector
     }
 
     void Update()
     {
-        // gravity
+        // Handle gravity
         groundedPlayer = controller.isGrounded;
-        if (groundedPlayer && playerVelocity.y < 0) // If grounded or the physics engine make it less than 0
+        if (groundedPlayer && playerVelocity.y < 0)
         {
-            playerVelocity.y = 0f;                  // we force it to 0
+            playerVelocity.y = 0f;
         }
-
-        Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                                                    // Notice that this vector is x,0,z ... this is the x-z plane
-                                                    // Don't get confused with the word "Horizontal" and "Vertical".
-                                                    // The two words are about the MOUSE or WASD keys.
-                                                    // Horizontal moves result in x movement in the game.
-                                                    // Vertical moves result in z movement in the game.
-        controller.Move(move * Time.deltaTime * playerSpeed); // Here, make the move
-
-        if (move != Vector3.zero)
+        
+        // Handle player rotation based on mouse input
+        Vector2 lookValue = lookAction.ReadValue<Vector2>();
+        float mouseX = lookValue.x * rotationSpeed * Time.deltaTime;
+        transform.Rotate(Vector3.up, mouseX);
+        
+        // Handle movement
+        Vector2 moveValue = moveAction.ReadValue<Vector2>();
+        
+        // Get camera-relative directions
+        Vector3 forward = cameraTransform.forward;
+        Vector3 right = cameraTransform.right;
+        
+        // Project to horizontal plane
+        forward.y = 0;
+        right.y = 0;
+        forward.Normalize();
+        right.Normalize();
+        
+        // Calculate movement direction
+        Vector3 moveDirection = forward * moveValue.y + right * moveValue.x;
+        
+        if (moveDirection.magnitude > 0.1f)
         {
-            gameObject.transform.forward = move;   // Make the face turn to that direction
+            moveDirection.Normalize();
         }
-
-        // Makes the player jump
-        if (Input.GetButtonDown("Jump") && groundedPlayer)
+        
+        controller.Move(moveDirection * playerSpeed * Time.deltaTime);
+        
+        // Handle jumping
+        if (jumpAction.triggered && groundedPlayer)
         {
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -2.0f * gravityValue);
         }
-
+        
         playerVelocity.y += gravityValue * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
     }
 }
-
