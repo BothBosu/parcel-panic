@@ -80,8 +80,17 @@ public class PlayerParcelManager : MonoBehaviour
         // Add the parcel to our held parcels
         heldParcels.Add(parcel);
         
-        // TODO: You might want to show the held parcel by the player
+            // Position the parcel at the hold point and parent it to the player
+        parcel.transform.position = holdPoint.position;
+        parcel.transform.parent = holdPoint;
         
+        // Disable the parcel's rigidbody while held
+        Rigidbody rb = parcel.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+        }
+
         return true;
     }
     
@@ -104,44 +113,53 @@ public class PlayerParcelManager : MonoBehaviour
     }
     
     private void ThrowParcel()
+{
+    if (heldParcels.Count > 0)
     {
-        if (heldParcels.Count > 0)
+        // Get the first parcel in our list
+        ParcelController parcelToThrow = heldParcels[0];
+        heldParcels.RemoveAt(0);
+
+        // Record the time when this parcel was thrown
+        parcelToThrow.lastThrownTime = Time.time;
+        
+        // Reactivate the parcel
+        parcelToThrow.gameObject.SetActive(true);
+        
+        // Position the parcel at our throw point
+        parcelToThrow.transform.position = holdPoint.position;
+        
+        // Unparent from the hold point
+        parcelToThrow.transform.parent = null;
+        
+        // Make sure it has a rigidbody for physics
+        Rigidbody rb = parcelToThrow.GetComponent<Rigidbody>();
+        if (rb == null)
         {
-            // Get the first parcel in our list
-            ParcelController parcelToThrow = heldParcels[0];
-            heldParcels.RemoveAt(0);
-            
-            // Reactivate the parcel
-            parcelToThrow.gameObject.SetActive(true);
-            
-            // Position the parcel at our throw point
-            parcelToThrow.transform.position = holdPoint.position;
-            
-            // Make sure it has a rigidbody for physics
-            Rigidbody rb = parcelToThrow.GetComponent<Rigidbody>();
-            if (rb == null)
-            {
-                rb = parcelToThrow.gameObject.AddComponent<Rigidbody>();
-            }
-            
-            // Calculate throw direction
-            Vector3 throwDirection = GetThrowDirection();
-            
-            // Apply throw force
-            float throwForce = GetCurrentThrowForce();
-            rb.linearVelocity = throwDirection * throwForce;
-            
-            // Reset charging state
-            isCharging = false;
-            currentChargeTime = 0f;
-            
-            // Hide trajectory
-            if (trajectoryRenderer != null)
-            {
-                trajectoryRenderer.HideTrajectory();
-            }
+            rb = parcelToThrow.gameObject.AddComponent<Rigidbody>();
+        }
+        
+        // This is the important part - set isKinematic to false before applying velocity
+        rb.isKinematic = false;
+        
+        // Calculate throw direction
+        Vector3 throwDirection = GetThrowDirection();
+        
+        // Apply throw force
+        float throwForce = GetCurrentThrowForce();
+        rb.linearVelocity = throwDirection * throwForce;  // Changed from linearVelocity to velocity
+        
+        // Reset charging state
+        isCharging = false;
+        currentChargeTime = 0f;
+        
+        // Hide trajectory
+        if (trajectoryRenderer != null)
+        {
+            trajectoryRenderer.HideTrajectory();
         }
     }
+}
     
     private float GetCurrentThrowForce()
     {

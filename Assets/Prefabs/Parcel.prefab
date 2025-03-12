@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 8060385334502392654}
   - component: {fileID: 6521948350100005963}
   - component: {fileID: 3826903941758239685}
-  - component: {fileID: 4084176766056028099}
   - component: {fileID: 6231664332041598032}
   m_Layer: 0
   m_Name: Parcel
@@ -138,27 +137,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &4084176766056028099
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2043814249925575555}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 0.99999994, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6231664332041598032
 MonoBehaviour:
   m_ObjectHideFlags: 0
