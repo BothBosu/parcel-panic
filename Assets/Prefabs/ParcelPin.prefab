@@ -88,3 +88,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84fe91fbe5f45e14381b458597990b04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parcel: {fileID: 4142703914221898990, guid: 985ef6d7f70a77b4587b361fe10ced50, type: 3}
+  mainCamera: {fileID: 0}
+  pinImage: {fileID: 0}
+  canvas: {fileID: 0}
+  edgeBuffer: 30
+  maxVisibleDistance: 50
+  closeDistance: 5
+  pinOffset: 50
+  distanceText: {fileID: 0}
+  farColor: {r: 1, g: 1, b: 1, a: 1}
+  closeColor: {r: 0, g: 1, b: 0, a: 1}
