@@ -3,18 +3,27 @@ using UnityEngine;
 
 public class PlayerTestState : PlayerBaseState
 {
+    // How quickly the character rotates to face the movement direction (higher = faster)
+    private readonly float rotationSpeed = 10.0f;
+
     public PlayerTestState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
-        
     }
 
     public override void Enter()
     {
-        
+        // Set initial animation state if needed
     }
 
     public override void Tick(float deltaTime)
     {
+        // Check if player wants to run and is also moving
+        if (stateMachine.InputReader.IsRunning && stateMachine.InputReader.MovementValue != Vector2.zero)
+        {
+            stateMachine.SwitchState(new PlayerRunningState(stateMachine));
+            return;
+        }
+
         Vector3 movement = new Vector3();
 
         // Move character
@@ -32,9 +41,15 @@ public class PlayerTestState : PlayerBaseState
             return;
         }
 
-        // If the character is moving, set animation to Running
+        // If the character is moving, set animation to Walking
         stateMachine.Animator.SetFloat("FreeLookSpeed", 1, 0.1f, deltaTime);
-        stateMachine.transform.rotation = Quaternion.LookRotation(movement);
+
+        // SMOOTH ROTATION: Use Slerp instead of immediate rotation
+        Quaternion targetRotation = Quaternion.LookRotation(movement);
+        stateMachine.transform.rotation = Quaternion.Slerp(
+            stateMachine.transform.rotation,
+            targetRotation,
+            rotationSpeed * deltaTime);
     }
 
     public override void Exit()
