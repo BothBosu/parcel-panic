@@ -19,11 +19,21 @@ public class PlayerParcelManager : MonoBehaviour
     public int trajectorySteps = 30; // Number of points in the trajectory line
     public float trajectoryTimeStep = 0.1f; // Time between each point in the trajectory
     
+    [Header("Sound Effects")]
+    public AudioClip throwSound; // Sound played when releasing throw
+    public AudioClip chargingSound; // Sound played when charging throw
+    public AudioClip collectSound; // Sound played when collecting a parcel
+    
     // Private variables
     private List<ParcelController> heldParcels = new List<ParcelController>();
     private float currentChargeTime = 0f;
     private bool isCharging = false;
     private Camera mainCamera;
+    
+    // Audio sources
+    private AudioSource throwAudioSource;
+    private AudioSource chargingAudioSource;
+    private AudioSource collectAudioSource;
     
     private void Start()
     {
@@ -34,6 +44,31 @@ public class PlayerParcelManager : MonoBehaviour
         {
             Debug.LogError("Trajectory Renderer is not assigned to Player Parcel Manager!");
         }
+        
+        // Setup audio sources
+        SetupAudioSources();
+    }
+    
+    private void SetupAudioSources()
+    {
+        // Create audio source for throw sound
+        throwAudioSource = gameObject.AddComponent<AudioSource>();
+        throwAudioSource.clip = throwSound;
+        throwAudioSource.playOnAwake = false;
+        throwAudioSource.volume = 1.0f;
+        
+        // Create audio source for charging sound
+        chargingAudioSource = gameObject.AddComponent<AudioSource>();
+        chargingAudioSource.clip = chargingSound;
+        chargingAudioSource.playOnAwake = false;
+        chargingAudioSource.loop = true; // Loop the charging sound
+        chargingAudioSource.volume = 0.7f;
+        
+        // Create audio source for collect sound
+        collectAudioSource = gameObject.AddComponent<AudioSource>();
+        collectAudioSource.clip = collectSound;
+        collectAudioSource.playOnAwake = false;
+        collectAudioSource.volume = 0.8f;
     }
     
     private void Update()
@@ -80,7 +115,7 @@ public class PlayerParcelManager : MonoBehaviour
         // Add the parcel to our held parcels
         heldParcels.Add(parcel);
         
-            // Position the parcel at the hold point and parent it to the player
+        // Position the parcel at the hold point and parent it to the player
         parcel.transform.position = holdPoint.position;
         parcel.transform.parent = holdPoint;
         
@@ -89,6 +124,12 @@ public class PlayerParcelManager : MonoBehaviour
         if (rb != null)
         {
             rb.isKinematic = true;
+        }
+        
+        // Play collect sound
+        if (collectAudioSource != null && collectSound != null)
+        {
+            collectAudioSource.Play();
         }
 
         return true;
@@ -101,6 +142,12 @@ public class PlayerParcelManager : MonoBehaviour
         
         // Begin showing trajectory
         UpdateTrajectory(GetCurrentThrowForce());
+        
+        // Play charging sound
+        if (chargingAudioSource != null && chargingSound != null)
+        {
+            chargingAudioSource.Play();
+        }
     }
     
     private void ContinueCharging()
@@ -113,53 +160,65 @@ public class PlayerParcelManager : MonoBehaviour
     }
     
     private void ThrowParcel()
-{
-    if (heldParcels.Count > 0)
     {
-        // Get the first parcel in our list
-        ParcelController parcelToThrow = heldParcels[0];
-        heldParcels.RemoveAt(0);
+        if (heldParcels.Count > 0)
+        {
+            // Get the first parcel in our list
+            ParcelController parcelToThrow = heldParcels[0];
+            heldParcels.RemoveAt(0);
 
-        // Record the time when this parcel was thrown
-        parcelToThrow.lastThrownTime = Time.time;
-        
-        // Reactivate the parcel
-        parcelToThrow.gameObject.SetActive(true);
-        
-        // Position the parcel at our throw point
-        parcelToThrow.transform.position = holdPoint.position;
-        
-        // Unparent from the hold point
-        parcelToThrow.transform.parent = null;
-        
-        // Make sure it has a rigidbody for physics
-        Rigidbody rb = parcelToThrow.GetComponent<Rigidbody>();
-        if (rb == null)
-        {
-            rb = parcelToThrow.gameObject.AddComponent<Rigidbody>();
-        }
-        
-        // This is the important part - set isKinematic to false before applying velocity
-        rb.isKinematic = false;
-        
-        // Calculate throw direction
-        Vector3 throwDirection = GetThrowDirection();
-        
-        // Apply throw force
-        float throwForce = GetCurrentThrowForce();
-        rb.linearVelocity = throwDirection * throwForce;  // Changed from linearVelocity to velocity
-        
-        // Reset charging state
-        isCharging = false;
-        currentChargeTime = 0f;
-        
-        // Hide trajectory
-        if (trajectoryRenderer != null)
-        {
-            trajectoryRenderer.HideTrajectory();
+            // Record the time when this parcel was thrown
+            parcelToThrow.lastThrownTime = Time.time;
+            
+            // Reactivate the parcel
+            parcelToThrow.gameObject.SetActive(true);
+            
+            // Position the parcel at our throw point
+            parcelToThrow.transform.position = holdPoint.position;
+            
+            // Unparent from the hold point
+            parcelToThrow.transform.parent = null;
+            
+            // Make sure it has a rigidbody for physics
+            Rigidbody rb = parcelToThrow.GetComponent<Rigidbody>();
+            if (rb == null)
+            {
+                rb = parcelToThrow.gameObject.AddComponent<Rigidbody>();
+            }
+            
+            // This is the important part - set isKinematic to false before applying velocity
+            rb.isKinematic = false;
+            
+            // Calculate throw direction
+            Vector3 throwDirection = GetThrowDirection();
+            
+            // Apply throw force
+            float throwForce = GetCurrentThrowForce();
+            rb.linearVelocity = throwDirection * throwForce;
+            
+            // Stop charging sound
+            if (chargingAudioSource != null && chargingAudioSource.isPlaying)
+            {
+                chargingAudioSource.Stop();
+            }
+            
+            // Play throw sound
+            if (throwAudioSource != null && throwSound != null)
+            {
+                throwAudioSource.Play();
+            }
+            
+            // Reset charging state
+            isCharging = false;
+            currentChargeTime = 0f;
+            
+            // Hide trajectory
+            if (trajectoryRenderer != null)
+            {
+                trajectoryRenderer.HideTrajectory();
+            }
         }
     }
-}
     
     private float GetCurrentThrowForce()
     {
