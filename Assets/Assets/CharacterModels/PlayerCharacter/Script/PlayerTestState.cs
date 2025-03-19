@@ -1,9 +1,8 @@
-using System.Threading;
 using UnityEngine;
 
 public class PlayerTestState : PlayerBaseState
 {
-    // How quickly the character rotates to face the movement direction (higher = faster)
+    // How quickly the character rotates to face the movement direction
     private readonly float rotationSpeed = 10.0f;
 
     public PlayerTestState(PlayerStateMachine stateMachine) : base(stateMachine)
@@ -12,7 +11,10 @@ public class PlayerTestState : PlayerBaseState
 
     public override void Enter()
     {
-        // Set initial animation state if needed
+        Debug.Log("Entering walking state");
+
+        // Make sure the carrying animation parameter is properly set
+        stateMachine.Animator.SetBool("IsCarrying", stateMachine.IsCarrying);
     }
 
     public override void Tick(float deltaTime)
@@ -44,7 +46,6 @@ public class PlayerTestState : PlayerBaseState
         // If the character is moving, set animation to Walking
         stateMachine.Animator.SetFloat("FreeLookSpeed", 1, 0.1f, deltaTime);
 
-        // SMOOTH ROTATION: Use Slerp instead of immediate rotation
         Quaternion targetRotation = Quaternion.LookRotation(movement);
         stateMachine.transform.rotation = Quaternion.Slerp(
             stateMachine.transform.rotation,
@@ -54,6 +55,6 @@ public class PlayerTestState : PlayerBaseState
 
     public override void Exit()
     {
-        Debug.Log("Exit");
+        Debug.Log("Exiting walking state");
     }
 }

@@ -14,10 +14,7 @@ public class PlayerRunningState : PlayerBaseState
 
     public override void Enter()
     {
-        // When entering the running state, we can play a transition animation
-        // or set animation parameters directly
-
-        // We'll use 2 to represent running in the animator
+        Debug.Log("Entering running state");
         stateMachine.Animator.SetFloat("FreeLookSpeed", 2.0f, 0.1f, Time.deltaTime);
     }
 
@@ -50,7 +47,6 @@ public class PlayerRunningState : PlayerBaseState
             return;
         }
 
-        // SMOOTH ROTATION: Use Slerp to gradually rotate toward the movement direction
         Quaternion targetRotation = Quaternion.LookRotation(movement);
         stateMachine.transform.rotation = Quaternion.Slerp(
             stateMachine.transform.rotation,
@@ -63,7 +59,6 @@ public class PlayerRunningState : PlayerBaseState
 
     public override void Exit()
     {
-        // Clean up anything specific to the running state
         Debug.Log("Exiting running state");
     }
 }
