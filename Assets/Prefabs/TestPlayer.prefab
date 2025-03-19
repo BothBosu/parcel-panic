@@ -262,7 +262,6 @@ GameObject:
   - component: {fileID: 6842935365529550611}
   - component: {fileID: 5967860120717110287}
   - component: {fileID: 5612717401199275573}
-  - component: {fileID: 7600845997009143901}
   - component: {fileID: 2495408630506879434}
   m_Layer: 0
   m_Name: TestPlayer
@@ -439,29 +438,10 @@ MonoBehaviour:
   rotationSpeed: 20
   cameraTarget: {fileID: 0}
   cameraTransform: {fileID: 0}
---- !u!136 &7600845997009143901
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8016988618040307796}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  animator: {fileID: 0}
+  knockdownDuration: 3
+  knockbackForce: 10
+  minImpactForce: 3
 --- !u!114 &2495408630506879434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -483,6 +463,9 @@ MonoBehaviour:
   trajectoryRenderer: {fileID: 0}
   trajectorySteps: 30
   trajectoryTimeStep: 0.1
+  throwSound: {fileID: 0}
+  chargingSound: {fileID: 0}
+  collectSound: {fileID: 0}
 --- !u!1 &8420321189112752332
 GameObject:
   m_ObjectHideFlags: 0

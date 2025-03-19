@@ -705,9 +705,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 199035557}
     - target: {fileID: 5612717401199275573, guid: 020af84e099150748adbbd488f272528, type: 3}
+      propertyPath: playerSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5612717401199275573, guid: 020af84e099150748adbbd488f272528, type: 3}
       propertyPath: cameraTarget
       value: 
       objectReference: {fileID: 58762313}
+    - target: {fileID: 5612717401199275573, guid: 020af84e099150748adbbd488f272528, type: 3}
+      propertyPath: knockbackForce
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5612717401199275573, guid: 020af84e099150748adbbd488f272528, type: 3}
+      propertyPath: minImpactForce
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5612717401199275573, guid: 020af84e099150748adbbd488f272528, type: 3}
       propertyPath: cameraTransform
       value: 
@@ -750,6 +762,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7883810882557327263, guid: 020af84e099150748adbbd488f272528, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7904812510017725415, guid: 020af84e099150748adbbd488f272528, type: 3}
+      propertyPath: m_IsTrigger
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8016988618040307796, guid: 020af84e099150748adbbd488f272528, type: 3}
@@ -3315,6 +3331,8 @@ MonoBehaviour:
   - {fileID: 4027668731262065585, guid: 4252fae3671f9984c99f855e2d08adb2, type: 3}
   - {fileID: 1264099198042762279, guid: 3e29f86f2cde2de4091bf5d903a89293, type: 3}
   - {fileID: 7961637352523100567, guid: 9a905b7c2869a374d93d1bb1cdbd4e9b, type: 3}
+  - {fileID: 7445874403096946364, guid: 58fe8f2503329b6498cd0798a9aa0225, type: 3}
+  - {fileID: 9727015742394000, guid: 0c2fb5b5976a9104bbec8c9914d621a3, type: 3}
   spawnPoint: {fileID: 2079369319}
   despawnPoint: {fileID: 1362642216}
   minSpawnInterval: 1.5
