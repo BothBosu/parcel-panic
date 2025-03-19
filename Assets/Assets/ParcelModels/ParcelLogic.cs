@@ -11,16 +11,9 @@ public class ParcelLogic : MonoBehaviour
     [SerializeField] private LayerMask playerLayerMask;        // Layer mask for player detection
 
     [Header("Carrying Position Adjustment")]
-    [Tooltip("Adjust left/right position relative to character (negative = left, positive = right)")]
     [SerializeField] private float offsetX = 0.0f;
-
-    [Tooltip("Adjust up/down position relative to character (negative = down, positive = up)")]
     [SerializeField] private float offsetY = 0.0f;
-
-    [Tooltip("Adjust forward/backward position relative to character (negative = backward, positive = forward)")]
     [SerializeField] private float offsetZ = 0.0f;
-
-    [Tooltip("Target bone for parcel carrying (e.g. 'LeftHand' or 'RightHand')")]
     [SerializeField] private string targetBoneName = "";
 
     // Expose pickup distance for ParcelManager
@@ -45,7 +38,7 @@ public class ParcelLogic : MonoBehaviour
     private void Start()
     {
         // Find and cache the PlayerStateMachine
-        playerStateMachine = FindObjectOfType<PlayerStateMachine>();
+        playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
         if (playerStateMachine != null)
         {
             // Try to find the target bone if specified

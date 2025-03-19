@@ -1,8 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ParcelManager : MonoBehaviour
 {
+    [Header("UI Settings")]
+    [SerializeField] private GameObject pickupPromptUI;
+    [SerializeField] private Vector3 uiOffset = new Vector3(0, 0.5f, 0);
+    [SerializeField] private float uiUpdateInterval = 0.1f;
+
     private static ParcelManager _instance;
     public static ParcelManager Instance
     {
@@ -11,7 +17,7 @@ public class ParcelManager : MonoBehaviour
             if (_instance == null)
             {
                 // Try to find existing instance
-                _instance = FindObjectOfType<ParcelManager>();
+                _instance = FindFirstObjectByType<ParcelManager>();
 
                 // Create new instance if none exists
                 if (_instance == null)
@@ -30,9 +36,15 @@ public class ParcelManager : MonoBehaviour
     // Currently carried parcel
     private ParcelLogic carriedParcel = null;
 
+    // Closest pickable parcel (for UI display)
+    private ParcelLogic closestPickableParcel = null;
+
     // Reference to player
     private PlayerStateMachine playerStateMachine;
     private InputReader inputReader;
+
+    // Timer for UI updates
+    private float uiUpdateTimer = 0f;
 
     private void Awake()
     {
@@ -44,10 +56,12 @@ public class ParcelManager : MonoBehaviour
         }
 
         _instance = this;
-        DontDestroyOnLoad(gameObject);
+
+        // Subscribe to scene change events instead of using DontDestroyOnLoad
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
 
         // Find player references
-        playerStateMachine = FindObjectOfType<PlayerStateMachine>();
+        playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
         if (playerStateMachine != null)
         {
             inputReader = playerStateMachine.InputReader;
@@ -57,14 +71,58 @@ public class ParcelManager : MonoBehaviour
         {
             Debug.LogError("Cannot find PlayerStateMachine in the scene!");
         }
+
+        // Hide UI at start
+        if (pickupPromptUI != null)
+        {
+            pickupPromptUI.SetActive(false);
+        }
+    }
+
+    private void Update()
+    {
+        // Update pickup UI at intervals to avoid doing it every frame
+        uiUpdateTimer += Time.deltaTime;
+        if (uiUpdateTimer >= uiUpdateInterval)
+        {
+            UpdatePickupUI();
+            uiUpdateTimer = 0f;
+        }
     }
 
     private void OnDestroy()
     {
+        // Unsubscribe from scene events
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+
         if (inputReader != null)
         {
             inputReader.OnPickupEvent -= HandlePickupInput;
         }
+
+        // Clear static instance reference if this is the current instance
+        if (_instance == this)
+        {
+            _instance = null;
+        }
+    }
+
+    // Handle scene unloading
+    private void OnSceneUnloaded(Scene scene)
+    {
+        // Clear static instance reference
+        if (_instance == this)
+        {
+            // Ensure we destroy the GameObject properly
+            Destroy(gameObject);
+            _instance = null;
+        }
+    }
+
+    // Clean up when application quits
+    private void OnApplicationQuit()
+    {
+        _instance = null;
     }
 
     // Register a parcel with the manager
@@ -86,6 +144,13 @@ public class ParcelManager : MonoBehaviour
         {
             carriedParcel = null;
         }
+
+        // If this was the closest pickable parcel, update the UI
+        if (closestPickableParcel == parcel)
+        {
+            closestPickableParcel = null;
+            UpdatePickupUI();
+        }
     }
 
     // Central handler for pickup input
@@ -106,19 +171,71 @@ public class ParcelManager : MonoBehaviour
             {
                 playerStateMachine.SwitchState(currentState);
             }
+
+            // Update the UI after dropping
+            UpdatePickupUI();
             return;
         }
 
         // Otherwise, try to pick up the closest valid parcel
-        ParcelLogic closestParcel = FindClosestPickableParcel();
+        ParcelLogic parcelToPickup = closestPickableParcel ?? FindClosestPickableParcel();
 
-        if (closestParcel != null)
+        if (parcelToPickup != null)
         {
             // Remember which parcel we're carrying
-            carriedParcel = closestParcel;
+            carriedParcel = parcelToPickup;
 
             // Tell the parcel to handle pickup
-            closestParcel.HandlePickup(GetCurrentPlayerState());
+            parcelToPickup.HandlePickup(GetCurrentPlayerState());
+
+            // Hide the UI while carrying
+            if (pickupPromptUI != null)
+            {
+                pickupPromptUI.SetActive(false);
+            }
+
+            // Clear closest pickable reference
+            closestPickableParcel = null;
+        }
+    }
+
+    // Updates the pickup UI based on nearby pickable parcels
+    private void UpdatePickupUI()
+    {
+        // Skip if no UI assigned
+        if (pickupPromptUI == null) return;
+
+        // If we're carrying something, hide the UI
+        if (carriedParcel != null)
+        {
+            pickupPromptUI.SetActive(false);
+            closestPickableParcel = null;
+            return;
+        }
+
+        // Find the closest pickable parcel
+        closestPickableParcel = FindClosestPickableParcel();
+
+        // Show/hide UI based on whether there's a pickable parcel
+        if (closestPickableParcel != null)
+        {
+            // Show the UI and position it above the parcel
+            pickupPromptUI.SetActive(true);
+
+            // Get the position to show the UI (above the parcel)
+            Vector3 uiPosition = closestPickableParcel.GetPickupTargetPosition() + uiOffset;
+            pickupPromptUI.transform.position = uiPosition;
+
+            // Make UI face the camera if there's a main camera
+            if (Camera.main != null)
+            {
+                pickupPromptUI.transform.rotation = Camera.main.transform.rotation;
+            }
+        }
+        else
+        {
+            // No pickable parcel nearby, hide the UI
+            pickupPromptUI.SetActive(false);
         }
     }
 
