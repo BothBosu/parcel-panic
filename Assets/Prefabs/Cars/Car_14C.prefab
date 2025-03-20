@@ -529,7 +529,6 @@ GameObject:
   - component: {fileID: 6521631024949838981}
   - component: {fileID: 1287447410081800565}
   - component: {fileID: 8744538166002699747}
-  - component: {fileID: 6609128048704234362}
   m_Layer: 0
   m_Name: Car_14C
   m_TagString: Vehicle
@@ -660,24 +659,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &6609128048704234362
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8016730992468643308}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 2.647857, y: 1.6753234, z: 5.8383226}
-  m_Center: {x: 0, y: 1.0255711, z: 0.0065044165}
