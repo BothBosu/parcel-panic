@@ -433,15 +433,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerSpeed: 4
-  jumpHeight: 2
+  jumpHeight: 1
   gravityValue: -9.81
   rotationSpeed: 20
   cameraTarget: {fileID: 0}
   cameraTransform: {fileID: 0}
-  animator: {fileID: 0}
-  knockdownDuration: 3
-  knockbackForce: 10
-  minImpactForce: 3
 --- !u!114 &2495408630506879434
 MonoBehaviour:
   m_ObjectHideFlags: 0
