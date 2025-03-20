@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Demos/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
@@ -15,11 +15,11 @@ EditorBuildSettings:
     path: Assets/Scenes/PanelScene.unity
     guid: 0eb15b424971b9b4ab1be8e981f5cbff
   - enabled: 1
-    path: Assets/Scenes/Demos/ObstaclesScene.unity
-    guid: 7774fa25f537f334da69970e68fc54e1
-  - enabled: 1
     path: Assets/Scenes/Demos/PrototypeScene.unity
     guid: 1c457d70de5c6fd4ebb4841c415be4d7
+  - enabled: 0
+    path: Assets/Scenes/Demos/ObstaclesScene.unity
+    guid: 7774fa25f537f334da69970e68fc54e1
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: b81eb0429617df24eaddac065243861c, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

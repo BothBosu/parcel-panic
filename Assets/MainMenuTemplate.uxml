@@ -1,5 +1,7 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <engine:VisualElement style="flex-grow: 1; align-items: center; justify-content: center;">
-        <engine:Button text="Start" name="Start" style="font-size: 68px; color: rgb(41, 73, 224); height: 137px; width: 768px;" />
+    <engine:VisualElement style="flex-grow: 1; align-items: center; justify-content: flex-end; height: 100px;">
+        <engine:Button text="Start" name="start-button" style="font-size: 48px; color: rgb(0, 0, 0); height: 108px; width: 350px; border-top-left-radius: 50px; border-top-right-radius: 50px; border-bottom-left-radius: 50px; border-bottom-right-radius: 50px; background-color: rgb(226, 236, 83); border-bottom-width: 1px; margin-bottom: 10px;" />
+        <engine:Button text="Select Level" name="selectLevel-button" style="font-size: 48px; color: rgb(0, 0, 0); height: 100px; width: 350px; border-top-left-radius: 50px; border-top-right-radius: 50px; border-bottom-right-radius: 50px; border-bottom-left-radius: 50px; background-color: rgb(226, 236, 83); margin-bottom: 10px;" />
+        <engine:Button text="Exit" name="exit-button" style="font-size: 48px; color: rgb(0, 0, 0); height: 100px; width: 350px; border-top-left-radius: 50px; border-top-right-radius: 50px; border-bottom-right-radius: 50px; border-bottom-left-radius: 50px; background-color: rgb(226, 236, 83); margin-bottom: 10px;" />
     </engine:VisualElement>
 </engine:UXML>
