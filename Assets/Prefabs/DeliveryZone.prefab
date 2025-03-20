@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: f693a56dcd3798343b1781f6d73103a9, type: 2}
     - target: {fileID: 919132149155446097, guid: 140b776cf0eb68e48af5c525dbb1f759, type: 3}
       propertyPath: m_Name
-      value: untitled
+      value: DeliveryZone
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -84,6 +84,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c86f93c79641dd04394ed54049980ff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  victorySound: {fileID: 8300000, guid: 692c810bb87856a4292297fdabd1f08f, type: 3}
 --- !u!64 &3235486657417102594
 MeshCollider:
   m_ObjectHideFlags: 0

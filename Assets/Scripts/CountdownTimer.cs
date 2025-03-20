@@ -10,6 +10,12 @@ public class CountdownTimer : MonoBehaviour
     [SerializeField] private float totalTime = 60f; // Total time in seconds
     [SerializeField] private TMPro.TextMeshProUGUI timerText; // Reference to UI Text component
     
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip tickingSound; // Reference to the ticking sound effect
+    [SerializeField] private float tickingSoundThreshold = 10f; // Time threshold when ticking starts (in seconds)
+    [SerializeField] private float tickingVolume = 1f; // Volume of the ticking sound
+    [SerializeField] private bool loopTickingSound = true; // Whether the sound should loop
+    
     [Header("Game Over UI")]
     [SerializeField] private GameObject gameOverPanel; // Reference to game over panel
     [SerializeField] private Button restartButton; // Reference to restart button
@@ -23,6 +29,8 @@ public class CountdownTimer : MonoBehaviour
     
     private float timeRemaining;
     private bool isTimerRunning = false;
+    private bool isTickingSoundPlaying = false;
+    private AudioSource audioSource;
     
     void Start()
     {
@@ -41,8 +49,27 @@ public class CountdownTimer : MonoBehaviour
         if (mainMenuButton != null)
             mainMenuButton.onClick.AddListener(GoToMainMenu);
         
+        // Set up audio source for ticking sound
+        SetupAudioSource();
+        
         // Update the timer display
         UpdateTimerDisplay();
+    }
+    
+    void SetupAudioSource()
+    {
+        // Get existing AudioSource or add a new one if none exists
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        
+        // Configure the audio source
+        audioSource.playOnAwake = false;
+        audioSource.loop = loopTickingSound;
+        audioSource.volume = tickingVolume;
+        audioSource.clip = tickingSound;
     }
     
     void Update()
@@ -53,6 +80,10 @@ public class CountdownTimer : MonoBehaviour
             {
                 // Decrease timer
                 timeRemaining -= Time.deltaTime;
+                
+                // Check if we should play ticking sound
+                CheckTickingSound();
+                
                 UpdateTimerDisplay();
             }
             else
@@ -60,9 +91,44 @@ public class CountdownTimer : MonoBehaviour
                 // Timer has reached zero
                 timeRemaining = 0;
                 isTimerRunning = false;
+                StopTickingSound();
                 UpdateTimerDisplay(); // Update one last time to ensure "0" is displayed
                 GameOver();
             }
+        }
+    }
+    
+    void CheckTickingSound()
+    {
+        // Start playing ticking sound when timer drops below threshold
+        if (timeRemaining <= tickingSoundThreshold && !isTickingSoundPlaying)
+        {
+            PlayTickingSound();
+        }
+        // Stop ticking sound if timer goes back above threshold (e.g., after adding time)
+        else if (timeRemaining > tickingSoundThreshold && isTickingSoundPlaying)
+        {
+            StopTickingSound();
+        }
+    }
+    
+    void PlayTickingSound()
+    {
+        if (tickingSound != null && audioSource != null)
+        {
+            audioSource.Play();
+            isTickingSoundPlaying = true;
+            Debug.Log("Ticking sound started");
+        }
+    }
+    
+    void StopTickingSound()
+    {
+        if (audioSource != null && isTickingSoundPlaying)
+        {
+            audioSource.Stop();
+            isTickingSoundPlaying = false;
+            Debug.Log("Ticking sound stopped");
         }
     }
     
@@ -84,6 +150,9 @@ public class CountdownTimer : MonoBehaviour
     void GameOver()
     {
         Debug.Log("Game Over!");
+        
+        // Stop ticking sound if it's playing
+        StopTickingSound();
         
         // Pause the game time - this will stop all movement
         Time.timeScale = 0f;
@@ -165,11 +234,27 @@ public class CountdownTimer : MonoBehaviour
     public void AddTime(float timeToAdd)
     {
         timeRemaining += timeToAdd;
+        
+        // Check if we need to stop the ticking sound after adding time
+        if (timeRemaining > tickingSoundThreshold && isTickingSoundPlaying)
+        {
+            StopTickingSound();
+        }
     }
     
     // Method to pause/resume the timer
     public void ToggleTimer(bool running)
     {
         isTimerRunning = running;
+        
+        // Pause/resume ticking sound based on timer state
+        if (!running && isTickingSoundPlaying)
+        {
+            audioSource.Pause();
+        }
+        else if (running && isTickingSoundPlaying)
+        {
+            audioSource.UnPause();
+        }
     }
 }

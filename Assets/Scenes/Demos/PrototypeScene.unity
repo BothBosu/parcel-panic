@@ -1398,6 +1398,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalTime: 30
   timerText: {fileID: 1175563013}
+  tickingSound: {fileID: 8300000, guid: 6caa7987723aa72499e18244e3f7ac8d, type: 3}
+  tickingSoundThreshold: 10
+  tickingVolume: 4
+  loopTickingSound: 1
   gameOverPanel: {fileID: 1412957741}
   restartButton: {fileID: 1731297216}
   mainMenuButton: {fileID: 191998880}
@@ -1614,6 +1618,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1785417668779136227, guid: 08618dca3b173eb478d911a7bda42fbf, type: 3}
+      propertyPath: victorySound
+      value: 
+      objectReference: {fileID: 8300000, guid: 692c810bb87856a4292297fdabd1f08f, type: 3}
     - target: {fileID: 6225575825061600577, guid: 08618dca3b173eb478d911a7bda42fbf, type: 3}
       propertyPath: m_Name
       value: DeliveryZone
@@ -4357,12 +4365,21 @@ MonoBehaviour:
   - {fileID: 7961637352523100567, guid: 9a905b7c2869a374d93d1bb1cdbd4e9b, type: 3}
   - {fileID: 7445874403096946364, guid: 58fe8f2503329b6498cd0798a9aa0225, type: 3}
   - {fileID: 9727015742394000, guid: 0c2fb5b5976a9104bbec8c9914d621a3, type: 3}
+  - {fileID: 3535938577815157079, guid: 3e3a70f60e75e6840ad26ea5975a721e, type: 3}
+  - {fileID: 8607998516294758926, guid: ef02ab416b689134394d2e389698e655, type: 3}
+  - {fileID: 4247222109125413554, guid: 7b4c61efe1e08414589b07830e66e8a2, type: 3}
+  - {fileID: 1182784906537587773, guid: 6d0d9b34c87c3d04896eaf085d8c8681, type: 3}
+  - {fileID: 9020330793460086308, guid: 3ae2c80704921014e8efece874735fa0, type: 3}
+  - {fileID: 8498731951543638074, guid: 38430d2a798188e4495db460921f8a9b, type: 3}
+  - {fileID: 522516406752746124, guid: 9cee70400bef79c4e8fcbf368163de17, type: 3}
+  - {fileID: 8016730992468643308, guid: 0247a18f73225fc4491c0cf90e16756e, type: 3}
+  - {fileID: 5531102581076341159, guid: 5d4464342e3bab144871664f37d07f7b, type: 3}
   spawnPoint: {fileID: 2079369319}
   despawnPoint: {fileID: 1362642216}
-  minSpawnInterval: 1.5
-  maxSpawnInterval: 3
+  minSpawnInterval: 0.5
+  maxSpawnInterval: 2
   minSpeed: 20
-  maxSpeed: 25
+  maxSpeed: 30
   laneCount: 2
   laneWidth: 4
 --- !u!4 &1944022847
