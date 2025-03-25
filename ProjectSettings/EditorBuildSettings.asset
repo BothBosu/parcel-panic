@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Demos/ObstaclesScene.unity
     guid: 7774fa25f537f334da69970e68fc54e1
+  - enabled: 1
+    path: Assets/Scenes/SelectLevelScene.unity
+    guid: 123bf2e624d4f7b4aae699937b1876b9
+  - enabled: 1
+    path: Assets/Scenes/Level1Scene.unity
+    guid: 373f91f0e788f93469f719c85957c10e
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: b81eb0429617df24eaddac065243861c, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
