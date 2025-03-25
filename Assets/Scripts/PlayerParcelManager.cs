@@ -229,24 +229,38 @@ public class PlayerParcelManager : MonoBehaviour
     
     private Vector3 GetThrowDirection()
 {
-    // By default, throw in the direction the player is facing
-    Vector3 direction = transform.forward;
-    
-    // You can also throw towards where the camera is pointing
+    Vector3 horizontalDirection;
+
     if (mainCamera != null)
     {
-        direction = mainCamera.transform.forward;
+        // Get the camera's forward vector, ignoring its vertical component.
+        horizontalDirection = mainCamera.transform.forward;
+        horizontalDirection.y = 0;
+        horizontalDirection = horizontalDirection.normalized;
+    }
+    else
+    {
+        // Fallback: use the player's forward vector.
+        horizontalDirection = transform.forward;
+        horizontalDirection.y = 0;
+        horizontalDirection = horizontalDirection.normalized;
     }
     
-    // Apply upward angle (REMOVED the negative sign)
-    Quaternion upwardRotation = Quaternion.Euler(throwUpwardAngle, 0, 0);
-    direction = upwardRotation * direction;
+    // Convert the upward angle to radians.
+    float angleRad = throwUpwardAngle * Mathf.Deg2Rad;
     
-    // Debug line to check the throw direction
-    Debug.DrawRay(holdPoint.position, direction * 5f, Color.red, 1f);
+    // Construct the throw direction:
+    // - The horizontal component: horizontalDirection * cos(angle)
+    // - The vertical component: Vector3.up * sin(angle)
+    Vector3 throwDirection = horizontalDirection * Mathf.Cos(angleRad) + Vector3.up * Mathf.Sin(angleRad);
     
-    return direction.normalized;
+    // Debug: draw the throw direction.
+    Debug.DrawRay(holdPoint.position, throwDirection * 5f, Color.red, 1f);
+    
+    return throwDirection;
 }
+
+
     
     private void UpdateTrajectory(float throwForce)
     {
