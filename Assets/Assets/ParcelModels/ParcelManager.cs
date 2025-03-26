@@ -65,7 +65,10 @@ public class ParcelManager : MonoBehaviour
         if (playerStateMachine != null)
         {
             inputReader = playerStateMachine.InputReader;
+
+            // Subscribe to input events
             inputReader.OnPickupEvent += HandlePickupInput;
+            inputReader.OnThrowStartEvent += HandleThrowStartInput;
         }
         else
         {
@@ -98,6 +101,7 @@ public class ParcelManager : MonoBehaviour
         if (inputReader != null)
         {
             inputReader.OnPickupEvent -= HandlePickupInput;
+            inputReader.OnThrowStartEvent -= HandleThrowStartInput;
         }
 
         // Clear static instance reference if this is the current instance
@@ -196,6 +200,33 @@ public class ParcelManager : MonoBehaviour
 
             // Clear closest pickable reference
             closestPickableParcel = null;
+        }
+    }
+
+    // New method to handle throw start input
+    private void HandleThrowStartInput()
+    {
+        // Only allow throwing if we're currently carrying a parcel
+        if (carriedParcel != null)
+        {
+            // Get current state before entering throwing state
+            PlayerBaseState currentState = GetCurrentPlayerState();
+
+            // Create the throwing state
+            PlayerThrowingState throwingState = new PlayerThrowingState(
+                playerStateMachine,
+                carriedParcel.transform,
+                currentState
+            );
+
+            // Switch to throwing state
+            playerStateMachine.SwitchState(throwingState);
+
+            // Hide the UI while in throwing state
+            if (pickupPromptUI != null)
+            {
+                pickupPromptUI.SetActive(false);
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class InputReader : MonoBehaviour, Controls.IPlayerActions
 {
@@ -11,8 +12,18 @@ public class InputReader : MonoBehaviour, Controls.IPlayerActions
     // Track if pickup was just pressed this frame
     public bool JustPressedPickup { get; private set; }
 
+    // Track if throw button is being held down
+    public bool IsThrowButtonHeld { get; private set; }
+
+    // Track if throw button was just released this frame
+    public bool JustReleasedThrow { get; private set; }
+
     // Event for pickup action
     public event Action OnPickupEvent;
+
+    // Event for throw action
+    public event Action OnThrowStartEvent;
+    public event Action OnThrowReleaseEvent;
 
     private Controls controls;
 
@@ -68,6 +79,22 @@ public class InputReader : MonoBehaviour, Controls.IPlayerActions
 
             // Also invoke the event for compatibility with existing code
             OnPickupEvent?.Invoke();
+        }
+    }
+    public void OnThrow(InputAction.CallbackContext context)
+    {
+        // When throw button is pressed
+        if (context.performed)
+        {
+            IsThrowButtonHeld = true;
+            OnThrowStartEvent?.Invoke();
+        }
+        // When throw button is released
+        else if (context.canceled)
+        {
+            IsThrowButtonHeld = false;
+            JustReleasedThrow = true;
+            OnThrowReleaseEvent?.Invoke();
         }
     }
 }
