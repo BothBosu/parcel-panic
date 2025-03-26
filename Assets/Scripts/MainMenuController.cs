@@ -23,7 +23,7 @@ public class MainMenuController : MonoBehaviour
 
     void StartButtonPressed()
     {
-        SceneManager.LoadScene("PrototypeScene");
+        SceneManager.LoadScene("Level1Scene");
     }
     
     void SelectLevelButtonPressed()
