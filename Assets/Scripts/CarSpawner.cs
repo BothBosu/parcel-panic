@@ -71,7 +71,9 @@ public class CarSpawner : MonoBehaviour
         
         // Calculate spawn position with lane offset
         Vector3 spawnPosition = spawnPoint.position;
-        spawnPosition.x += (lane - (laneCount - 1) / 2.0f) * laneWidth;
+        Vector3 laneOffset = spawnPoint.right * ((lane - (laneCount - 1) / 2.0f) * laneWidth);
+        spawnPosition += laneOffset;
+
         
         // Create the car
         GameObject car = Instantiate(carPrefabs[carIndex], spawnPosition, spawnPoint.rotation);
@@ -97,15 +99,24 @@ public class CarController : MonoBehaviour
 
     // Move the car forward each frame
     private void Update()
+{
+    // Move forward at the assigned speed
+    transform.Translate(Vector3.forward * speed * Time.deltaTime, Space.Self);
+
+    // Check distance to despawn point
+    if (Vector3.Distance(transform.position, targetPoint.position) <= 5.0f)
     {
-        // Move forward at the assigned speed
-        transform.Translate(Vector3.forward * speed * Time.deltaTime, Space.Self);
-        
-        // Check if the car has reached the despawn point
-        if (Vector3.Distance(transform.position, targetPoint.position) <= 5.0f ||
-            transform.position.z > targetPoint.position.z)
-        {
-            Destroy(gameObject);
-        }
+        Destroy(gameObject);
+        return;
     }
+
+    // Check if the car has passed the despawn point by using the dot product
+    Vector3 toTarget = targetPoint.position - transform.position;
+    // If the dot product is less than zero, it means the car's forward direction is away from the target
+    if (Vector3.Dot(transform.forward, toTarget) < 0)
+    {
+        Destroy(gameObject);
+    }
+}
+
 }
