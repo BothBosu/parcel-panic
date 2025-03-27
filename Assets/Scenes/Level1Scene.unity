@@ -4100,7 +4100,6 @@ MonoBehaviour:
   m_Script: {fileID: 1369296350}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointType: 0
 --- !u!4 &1003207506 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4029823346756476, guid: be4bba095d6f34dba9178c4e24f20408, type: 3}
@@ -4335,7 +4334,6 @@ MonoBehaviour:
   m_Script: {fileID: 1369296350}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointType: 0
 --- !u!4 &1039827548 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4000012093317524, guid: 8cd553c46d87448b6b3e01ffa5306570, type: 3}
@@ -5396,7 +5394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77af63ea49aa67e4f8f749007f82e247, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalTime: 60
+  totalTime: 30
   timerText: {fileID: 480722420}
   tickingSound: {fileID: 8300000, guid: 6caa7987723aa72499e18244e3f7ac8d, type: 3}
   tickingSoundThreshold: 10
