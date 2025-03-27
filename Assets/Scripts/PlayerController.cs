@@ -21,6 +21,13 @@ public class PlayerController : MonoBehaviour
     public Transform cameraTarget;
     public Transform cameraTransform;
 
+    // Add impact settings
+    [Header("Impact Settings")]
+    public float impactForce = 20f;
+    public float recoveryTime = 1f;
+    private bool isRecoveringFromImpact = false;
+    private Vector3 impactDirection;
+
     private PlayerInput playerInput;
     private InputAction moveAction;
     private InputAction lookAction;
@@ -29,6 +36,7 @@ public class PlayerController : MonoBehaviour
 
     // Add reference to the PlayerStateMachine
     [SerializeField] private PlayerStateMachine playerStateMachine;
+    
     private void Start()
     { 
         controller = GetComponent<CharacterController>();
@@ -64,42 +72,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Handle gravity
-        groundedPlayer = controller.isGrounded;
-        if (groundedPlayer && playerVelocity.y < 0)
+        if (isRecoveringFromImpact)
         {
-            playerVelocity.y = 0f;
-            
-            // Inform the state machine that we're grounded (needed for animation transitions)
-            if (playerStateMachine != null)
-            {
-                playerStateMachine.SetGroundedState(true);
-            }
-        }
-        else if (!groundedPlayer)
-        {
-            // Inform the state machine that we're not grounded
-            if (playerStateMachine != null)
-            {
-                playerStateMachine.SetGroundedState(false);
-            }
+            // Skip normal movement updates when recovering from impact
+            HandleGravity();
+            return;
         }
 
-        // Add this to your Update method
-        void AlignWithCamera()
-        {
-            // Get camera forward direction, but ignore Y axis
-            Vector3 cameraForward = cameraTransform.forward;
-            cameraForward.y = 0;
-            cameraForward.Normalize();
-            
-            // Calculate the desired rotation
-            Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
-            
-            // Smoothly rotate the character to face the camera direction
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-        }
-        
+        // Handle gravity
+        HandleGravity();
+
         // Handle player rotation based on mouse input
         Vector2 lookValue = lookAction.ReadValue<Vector2>();
         float mouseX = lookValue.x * rotationSpeed * Time.deltaTime;
@@ -142,5 +124,103 @@ public class PlayerController : MonoBehaviour
 
         playerVelocity.y += gravityValue * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
+    }
+
+    // Handle gravity in a separate method to avoid code duplication
+    private void HandleGravity()
+    {
+        groundedPlayer = controller.isGrounded;
+        if (groundedPlayer && playerVelocity.y < 0)
+        {
+            playerVelocity.y = 0f;
+            
+            // Inform the state machine that we're grounded (needed for animation transitions)
+            if (playerStateMachine != null)
+            {
+                playerStateMachine.SetGroundedState(true);
+            }
+        }
+        else if (!groundedPlayer)
+        {
+            // Inform the state machine that we're not grounded
+            if (playerStateMachine != null)
+            {
+                playerStateMachine.SetGroundedState(false);
+            }
+        }
+    }
+
+    // Detect collisions with the vehicle
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        // Check if the collision is with a vehicle
+        if (hit.gameObject.CompareTag("Vehicle") && !isRecoveringFromImpact)
+        {
+            // Get the vehicle's rigidbody
+            Rigidbody vehicleRb = hit.gameObject.GetComponent<Rigidbody>();
+            
+            if (vehicleRb != null)
+            {
+                // Calculate impact direction (away from the vehicle)
+                impactDirection = transform.position - hit.gameObject.transform.position;
+                impactDirection.y = 0; // Keep it horizontal
+                impactDirection.Normalize();
+                
+                // Calculate impact force based on vehicle velocity
+                float impactMagnitude = vehicleRb.linearVelocity.magnitude * impactForce;
+                
+                // Apply the impact
+                StartCoroutine(ApplyImpact(impactDirection, impactMagnitude));
+            }
+        }
+    }
+
+    private IEnumerator ApplyImpact(Vector3 direction, float force)
+    {
+        isRecoveringFromImpact = true;
+        
+        // Notify the state machine about the impact (if you want to trigger an animation)
+        if (playerStateMachine != null)
+        {
+            // Assuming you have an Impact trigger in your animator
+            // You might need to add this to your PlayerStateMachine class
+            if (playerStateMachine.Animator != null)
+            {
+                playerStateMachine.Animator.SetTrigger("Impact");
+            }
+        }
+        
+        // Apply the impact force over several frames
+        float elapsedTime = 0f;
+        
+        while (elapsedTime < recoveryTime)
+        {
+            // Add a slight upward component for a more natural looking impact
+            Vector3 currentImpact = direction * force * (1 - (elapsedTime / recoveryTime));
+            currentImpact.y = 0.5f * force * (1 - (elapsedTime / recoveryTime));
+            
+            // Move the character controller in the impact direction
+            controller.Move(currentImpact * Time.deltaTime);
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        isRecoveringFromImpact = false;
+    }
+
+    // Helper method to align with camera
+    void AlignWithCamera()
+    {
+        // Get camera forward direction, but ignore Y axis
+        Vector3 cameraForward = cameraTransform.forward;
+        cameraForward.y = 0;
+        cameraForward.Normalize();
+        
+        // Calculate the desired rotation
+        Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
+        
+        // Smoothly rotate the character to face the camera direction
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 }
