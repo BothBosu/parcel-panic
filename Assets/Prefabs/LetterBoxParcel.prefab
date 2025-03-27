@@ -10,27 +10,27 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: adec67e9e569e624b90a7c3453fc735e, type: 3}
       propertyPath: m_LocalScale.x
-      value: 55.53779
+      value: 44.49973
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: adec67e9e569e624b90a7c3453fc735e, type: 3}
       propertyPath: m_LocalScale.y
-      value: 55.53779
+      value: 44.49973
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: adec67e9e569e624b90a7c3453fc735e, type: 3}
       propertyPath: m_LocalScale.z
-      value: 55.53779
+      value: 44.49973
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: adec67e9e569e624b90a7c3453fc735e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.58
+      value: -6.2199993
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: adec67e9e569e624b90a7c3453fc735e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.39
+      value: 0.74999297
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: adec67e9e569e624b90a7c3453fc735e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.34
+      value: -48.72
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: adec67e9e569e624b90a7c3453fc735e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -88,6 +88,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: adec67e9e569e624b90a7c3453fc735e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1885476104503566198}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: adec67e9e569e624b90a7c3453fc735e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7801504326182682288}
   m_SourcePrefab: {fileID: 100100000, guid: adec67e9e569e624b90a7c3453fc735e, type: 3}
 --- !u!1 &3618088070670276180 stripped
 GameObject:
@@ -170,7 +173,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3618088070670276180}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8baa90143017be145917e4ad0622f256, type: 3}
   m_Name: 
@@ -178,3 +181,26 @@ MonoBehaviour:
   mass: 1
   collectEffect: {fileID: 0}
   lastThrownTime: 0
+--- !u!114 &7801504326182682288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3618088070670276180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41e3eaedd7d52ce4baf36946114d9dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupDistance: 2
+  dropForce: 2
+  dropDistance: 1.5
+  collisionIgnoreTime: 1
+  playerLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  offsetX: 0.03
+  offsetY: 0.18
+  offsetZ: 0.36
+  targetBoneName: 

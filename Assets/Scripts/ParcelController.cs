@@ -33,6 +33,7 @@ public class ParcelController : MonoBehaviour
                 
                 // Deactivate the parcel object
                 gameObject.SetActive(false);
+                // GetComponent<Collider>().enabled = false;
             }
         }
     }

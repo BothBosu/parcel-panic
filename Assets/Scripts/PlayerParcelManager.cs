@@ -24,6 +24,9 @@ public class PlayerParcelManager : MonoBehaviour
     public AudioClip chargingSound; // Sound played when charging throw
     public AudioClip collectSound; // Sound played when collecting a parcel
     
+    [Header("References")]
+    public PlayerStateMachine playerStateMachine;
+
     // Private variables
     private List<ParcelController> heldParcels = new List<ParcelController>();
     private float currentChargeTime = 0f;
@@ -39,6 +42,22 @@ public class PlayerParcelManager : MonoBehaviour
     {
         mainCamera = Camera.main;
         
+        // Find the player state machine if not assigned
+        if (playerStateMachine == null)
+        {
+            playerStateMachine = GetComponent<PlayerStateMachine>();
+            
+            // If not on this component, try to find it on parent or children
+            if (playerStateMachine == null)
+            {
+                playerStateMachine = GetComponentInParent<PlayerStateMachine>();
+                
+                if (playerStateMachine == null)
+                {
+                    playerStateMachine = GetComponentInChildren<PlayerStateMachine>();
+                }
+            }
+        }
         // Make sure trajectory renderer is assigned
         if (trajectoryRenderer == null)
         {
@@ -117,6 +136,7 @@ public class PlayerParcelManager : MonoBehaviour
         
         // Position the parcel at the hold point and parent it to the player
         parcel.transform.position = holdPoint.position;
+        parcel.transform.rotation = holdPoint.rotation;
         parcel.transform.parent = holdPoint;
         
         // Disable the parcel's rigidbody while held
@@ -130,6 +150,12 @@ public class PlayerParcelManager : MonoBehaviour
         if (collectAudioSource != null && collectSound != null)
         {
             collectAudioSource.Play();
+        }
+
+        // Set carrying animation state
+        if (playerStateMachine != null)
+        {
+            playerStateMachine.SetCarryingState(true);
         }
 
         return true;
@@ -206,6 +232,12 @@ public class PlayerParcelManager : MonoBehaviour
             if (throwAudioSource != null && throwSound != null)
             {
                 throwAudioSource.Play();
+            }
+
+            // Reset carrying animation state
+            if (playerStateMachine != null && heldParcels.Count == 0)
+            {
+                playerStateMachine.SetCarryingState(false);
             }
             
             // Reset charging state

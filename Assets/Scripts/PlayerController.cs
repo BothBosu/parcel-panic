@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour
     private InputAction jumpAction;
     private InputAction aimAction;
 
+    // Add reference to the PlayerStateMachine
+    [SerializeField] private PlayerStateMachine playerStateMachine;
     private void Start()
     { 
         controller = GetComponent<CharacterController>();
@@ -35,6 +37,12 @@ public class PlayerController : MonoBehaviour
         lookAction = playerInput.actions["Look"];
         jumpAction = playerInput.actions["Jump"];
         aimAction = playerInput.actions["Aim"];
+
+        // Get reference to the PlayerStateMachine if not set
+        if (playerStateMachine == null)
+        {
+            playerStateMachine = GetComponentInChildren<PlayerStateMachine>();
+        }
 
         // Create camera target if it doesn't exist
         if (cameraTarget == null)
@@ -61,8 +69,37 @@ public class PlayerController : MonoBehaviour
         if (groundedPlayer && playerVelocity.y < 0)
         {
             playerVelocity.y = 0f;
+            
+            // Inform the state machine that we're grounded (needed for animation transitions)
+            if (playerStateMachine != null)
+            {
+                playerStateMachine.SetGroundedState(true);
+            }
+        }
+        else if (!groundedPlayer)
+        {
+            // Inform the state machine that we're not grounded
+            if (playerStateMachine != null)
+            {
+                playerStateMachine.SetGroundedState(false);
+            }
         }
 
+        // Add this to your Update method
+        void AlignWithCamera()
+        {
+            // Get camera forward direction, but ignore Y axis
+            Vector3 cameraForward = cameraTransform.forward;
+            cameraForward.y = 0;
+            cameraForward.Normalize();
+            
+            // Calculate the desired rotation
+            Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
+            
+            // Smoothly rotate the character to face the camera direction
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+        
         // Handle player rotation based on mouse input
         Vector2 lookValue = lookAction.ReadValue<Vector2>();
         float mouseX = lookValue.x * rotationSpeed * Time.deltaTime;
@@ -95,6 +132,12 @@ public class PlayerController : MonoBehaviour
         if (jumpAction.triggered && groundedPlayer)
         {
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -2.0f * gravityValue);
+            
+            // Trigger jump animation
+            if (playerStateMachine != null)
+            {
+                playerStateMachine.TriggerJump();
+            }
         }
 
         playerVelocity.y += gravityValue * Time.deltaTime;
