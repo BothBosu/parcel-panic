@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement; // Add this for scene management
 
 [RequireComponent(typeof(CharacterController), typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
@@ -21,10 +22,14 @@ public class PlayerController : MonoBehaviour
     public Transform cameraTarget;
     public Transform cameraTransform;
 
-    // Add impact settings
+    // Modify impact settings to include level restart
     [Header("Impact Settings")]
-    public float impactForce = 20f;
+    public float impactForce = 10f;
     public float recoveryTime = 1f;
+    public bool restartLevelOnImpact = true; // New variable to control behavior
+    public float restartDelay = 0.5f; // Time delay before restarting level
+    public AudioClip crashSound; // Reference to the crash sound effect
+    public float crashSoundVolume = 1.0f; // Volume for the crash sound
     private bool isRecoveringFromImpact = false;
     private Vector3 impactDirection;
 
@@ -169,10 +174,67 @@ public class PlayerController : MonoBehaviour
                 // Calculate impact force based on vehicle velocity
                 float impactMagnitude = vehicleRb.linearVelocity.magnitude * impactForce;
                 
-                // Apply the impact
-                StartCoroutine(ApplyImpact(impactDirection, impactMagnitude));
+                if (restartLevelOnImpact)
+                {
+                    // Restart the level after a vehicle hit
+                    StartCoroutine(RestartLevelAfterDelay(restartDelay));
+                    
+                    // Trigger impact animation and disable controls
+                    HandleVehicleImpact();
+                }
+                else
+                {
+                    // Apply the original impact behavior
+                    StartCoroutine(ApplyImpact(impactDirection, impactMagnitude));
+                }
             }
         }
+    }
+
+    // New method to handle the vehicle impact when restarting level
+    private void HandleVehicleImpact()
+    {
+        isRecoveringFromImpact = true;
+        
+        // Disable player input
+        if (playerInput != null)
+        {
+            playerInput.actions.Disable();
+        }
+        
+        // Trigger impact animation if available
+        if (playerStateMachine != null && playerStateMachine.Animator != null)
+        {
+            playerStateMachine.Animator.SetTrigger("Impact");
+        }
+        
+        // Play crash sound effect
+        PlayCrashSound();
+        
+        // You could also add effects here like:
+        // - Particle effects for the impact
+        // - Screen shake
+        // - Fade to black before restart
+    }
+    
+    // Method to play crash sound effect
+    private void PlayCrashSound()
+    {
+        if (crashSound != null)
+        {
+            // Play the sound at the player's position
+            AudioSource.PlayClipAtPoint(crashSound, transform.position, crashSoundVolume);
+        }
+    }
+
+    // New method to restart the level after a delay
+    private IEnumerator RestartLevelAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        // Restart the current scene
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
     }
 
     private IEnumerator ApplyImpact(Vector3 direction, float force)

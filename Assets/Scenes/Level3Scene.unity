@@ -3287,6 +3287,10 @@ PrefabInstance:
       propertyPath: recoveryTime
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2540271804042323270, guid: 9647bab23cb82cc46aceba52cf0a2971, type: 3}
+      propertyPath: restartDelay
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5808246396056662293, guid: 9647bab23cb82cc46aceba52cf0a2971, type: 3}
       propertyPath: trajectoryRenderer
       value: 

@@ -252,6 +252,12 @@ MonoBehaviour:
   rotationSpeed: 20
   cameraTarget: {fileID: 8455009379385184763}
   cameraTransform: {fileID: 8455009379385184763}
+  impactForce: 20
+  recoveryTime: 0.5
+  restartLevelOnImpact: 1
+  restartDelay: 0.1
+  crashSound: {fileID: 8300000, guid: 96ee3889957c71447a9f1eeb6135d5fe, type: 3}
+  crashSoundVolume: 1
   playerStateMachine: {fileID: 7593171889545893991}
 --- !u!114 &5808246396056662293
 MonoBehaviour:

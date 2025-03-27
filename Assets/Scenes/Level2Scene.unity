@@ -6573,6 +6573,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2540271804042323270, guid: 9647bab23cb82cc46aceba52cf0a2971, type: 3}
+      propertyPath: restartDelay
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5808246396056662293, guid: 9647bab23cb82cc46aceba52cf0a2971, type: 3}
       propertyPath: trajectoryRenderer
       value: 
