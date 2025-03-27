@@ -32,8 +32,8 @@ public class DeliveryZoneController : MonoBehaviour
             }
             else
             {
-                // If there's no sound, just load the scene
-                SceneManager.LoadScene("MainMenuScene");
+                // If there's no sound, just load the next scene
+                LoadNextScene();
             }
         }
     }
@@ -45,6 +45,25 @@ public class DeliveryZoneController : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         
         // Load the next scene
-        SceneManager.LoadScene("MainMenuScene");
+        LoadNextScene();
+    }
+    
+    private void LoadNextScene()
+    {
+        // Calculate the next scene's index
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        
+        // Ensure the next scene exists in the Build Settings
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        else
+        {
+            // Optionally handle what happens if there is no next scene.
+            // For example, loop back to the first scene or show an end-of-game screen.
+            Debug.Log("No more levels to load. Restarting at level 0.");
+            SceneManager.LoadScene(0);
+        }
     }
 }
