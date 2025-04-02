@@ -73,10 +73,6 @@ public class GravityHandler : MonoBehaviour
                 verticalVelocity = -terminalVelocity;
             }
         }
-
-        // Apply vertical velocity to character controller
-        Vector3 verticalMovement = new Vector3(0f, verticalVelocity, 0f);
-        characterController.Move(verticalMovement * deltaTime);
     }
 
     // Visualization for ground check

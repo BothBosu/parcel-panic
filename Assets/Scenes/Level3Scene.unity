@@ -5138,7 +5138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77af63ea49aa67e4f8f749007f82e247, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalTime: 180
+  totalTime: 120
   timerText: {fileID: 480722420}
   tickingSound: {fileID: 8300000, guid: 6caa7987723aa72499e18244e3f7ac8d, type: 3}
   tickingSoundThreshold: 10
