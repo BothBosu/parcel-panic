@@ -1,10 +1,12 @@
 # 📦 Parcel Panic!
+![image7](https://github.com/user-attachments/assets/3b5bd403-bc49-4f90-b491-94460186a90d)
 
 **Parcel Panic!** is a chaotic, comedic Unity game where you take on the role of a rookie courier trying to deliver parcels under extreme (and hilarious) pressure. Rush through city alleys, dodge cars, and yeet parcels at targets before time runs out!
 
 Inspired by party games like *Overcooked* and *Fall Guys*, this project focuses on creating an expressive, fast-paced, and funny player experience.
 
 ---
+
 
 ## 🛠 Project Summary
 
@@ -18,6 +20,7 @@ Inspired by party games like *Overcooked* and *Fall Guys*, this project focuses 
 
 ## 🔗 Play It
 https://play.unity.com/en/games/245d67e2-1d22-4ee5-b92d-050c0c74845d/parcelpanic
+<img width="1457" height="802" alt="image8" src="https://github.com/user-attachments/assets/f527bd99-3543-4195-916f-bee5edfe1f6e" />
 
 ---
 
@@ -41,6 +44,7 @@ https://play.unity.com/en/games/245d67e2-1d22-4ee5-b92d-050c0c74845d/parcelpanic
 | `Level2Scene` | A reverse of level 1 with lower time limit |
 | `Level3Scene` | Hardest level with more challenging parkour |
 | `Demos/` | Contains experimental test scenes that were used for prototyping but are not included in the final build |
+<img width="1457" height="816" alt="image5" src="https://github.com/user-attachments/assets/aed77d74-bb9b-4283-ac1a-ca1192b58f67" />
 
 ---
 
@@ -48,7 +52,6 @@ https://play.unity.com/en/games/245d67e2-1d22-4ee5-b92d-050c0c74845d/parcelpanic
 
 - **Toon City** 3D building models were used for the environment design
 - Sound effects and music were added to enhance comedic theme
-
 ---
 
 ## 📁 Project Structure (Important Folders)
